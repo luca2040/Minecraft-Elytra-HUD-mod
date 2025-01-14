@@ -141,12 +141,14 @@ public class ElytraHUDClient implements ClientModInitializer {
                 final int leftX = 5;
                 final int rightX = width - 78;
 
+                // X position
                 switch (position) {
                     case 0, 2, 4 -> renderX = leftX;
                     case 1, 3, 7 -> renderX = rightX;
                     case 5 -> renderX = -172 + (width / 2);
                     default -> renderX = 92 + (width / 2);
                 }
+                // Y position
                 switch (position) {
                     case 0, 1 -> renderY = upperY;
                     case 2, 3 -> renderY = centerY;
@@ -172,8 +174,14 @@ public class ElytraHUDClient implements ClientModInitializer {
                 List<?> equippedList = (List<?>) getEquippedMethod.invoke(trinketComponent, ELYTRA_CHECK);
 
                 if (!equippedList.isEmpty()) {
-                    Pair<Object, ItemStack> firstPair = (Pair<Object, ItemStack>) equippedList.get(0);
-                    return firstPair.getRight();
+                    for (Object item : equippedList) {
+                        Pair<Object, ItemStack> pair = (Pair<Object, ItemStack>) item;
+                        ItemStack item_stack = pair.getRight();
+
+                        boolean isElytra = item_stack.getItem() instanceof net.minecraft.item.ElytraItem;
+                        if (isElytra)
+                            return item_stack;
+                    }
                 }
             }
 

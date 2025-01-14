@@ -9,7 +9,7 @@
   ],
   "contact": {
   },
-  "license": "All rights reserved",
+  "license": "MIT License",
   "icon": "assets/elytra-hud/icon.png",
   "environment": "*",
   "entrypoints": {
