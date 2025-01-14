@@ -73,6 +73,6 @@ Because of this function the mod ***should*** work with every mod that uses the 
 
 ### You can download this mod on:
 
-<h4>[Modrinth](https://modrinth.com/mod/elytra-hud-mod) <br/>
+
+[Modrinth](https://modrinth.com/mod/elytra-hud-mod) <br/>
 [Curseforge](https://www.curseforge.com/minecraft/mc-mods/elytra-hud)
-<h4/>
