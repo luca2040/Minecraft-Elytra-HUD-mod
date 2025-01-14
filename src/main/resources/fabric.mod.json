@@ -8,6 +8,8 @@
     "Apollo_2040"
   ],
   "contact": {
+    "issues": "https://github.com/luca2040/Minecraft-Elytra-HUD-mod/issues",
+    "homepage": "https://github.com/luca2040/Minecraft-Elytra-HUD-mod"
   },
   "license": "MIT License",
   "icon": "assets/elytra-hud/icon.png",
@@ -34,7 +36,9 @@
   "custom": {
     "modmenu": {
       "links": {
-      }
+        "modmenu.source": "https://github.com/luca2040/Minecraft-Elytra-HUD-mod"
+      },
+      "update_checker": true
     }
   }
 }
