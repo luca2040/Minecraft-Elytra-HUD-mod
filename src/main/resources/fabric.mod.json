@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "elytra-hud",
+  "version": "${version}",
+  "name": "Elytra HUD",
+  "description": "Adds the Elytra durability on the HUD, and displays a message when it is about to break.",
+  "authors": [
+    "Apollo_2040"
+  ],
+  "contact": {
+  },
+  "license": "All rights reserved",
+  "icon": "assets/elytra-hud/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.apollo.elytrahud.ElytraHUDClient"
+    ],
+    "modmenu": [
+      "net.apollo.elytrahud.menu.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "~1.21",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "modmenu": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+      }
+    }
+  }
+}

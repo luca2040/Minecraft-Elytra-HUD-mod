@@ -1,0 +1,13 @@
+{
+  "title.elytrahud.config": "Elytra HUD config",
+  "category.elytrahud.HUD": "HUD",
+  "category.elytrahud.message": "Low durability message",
+  "option.elytrahud.showHUD": "Show HUD",
+  "option.elytrahud.showPercent": "Show percentage",
+  "option.tooltip.elytrahud.showPercent": "If \"Yes\" the Elytra durability will be shown as the remaining percentage.\nIf \"No\" il will be shown as durability points.",
+  "option.elytrahud.position": "HUD position",
+  "option.tooltip.elytrahud.position": "0: Upper - Left corner\n1: Upper - Right corner\n2: Center - Left\n3: Center - Right\n4: Lower - Left corner\n5: Left to hotbar\n6: Right to hotbar (Default)\n7: Lower - Right corner",
+  "option.elytrahud.showMessage": "Show low durability message",
+  "option.elytrahud.messageText": "Message text",
+  "option.elytrahud.messageColor": "Message color"
+}
