@@ -7,21 +7,15 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
 
-
-import java.lang.reflect.Method;
 import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 import static net.apollo.elytrahud.config.load_save.load;
 
@@ -47,29 +41,6 @@ public class ElytraHUDClient implements ClientModInitializer {
 
     public static final String config_file_path = FabricLoader.getInstance().getConfigDir().toAbsolutePath() + "\\ElytraHUD_config.toml";
 
-    public static final boolean IS_TRINKETS_API_PRESENT;
-    private static Method getTrinketComponentMethod;
-    private static Method getEquippedMethod;
-
-    public static final Predicate<ItemStack> ELYTRA_CHECK = stack -> stack.getItem() instanceof net.minecraft.item.ElytraItem;
-
-    static {
-        boolean isPresent;
-        try {
-            // Load Trinkets API if present
-            Class<?> trinketsApiClass = Class.forName("dev.emi.trinkets.api.TrinketsApi");
-            Class<?> trinketComponentClass = Class.forName("dev.emi.trinkets.api.TrinketComponent");
-
-            getTrinketComponentMethod = trinketsApiClass.getMethod("getTrinketComponent", LivingEntity.class);
-            getEquippedMethod = trinketComponentClass.getMethod("getEquipped", Predicate.class);
-
-            isPresent = true;
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
-            isPresent = false;
-        }
-        IS_TRINKETS_API_PRESENT = isPresent;
-    }
-
     @Override
     public void onInitializeClient() {
         load();
@@ -84,27 +55,25 @@ public class ElytraHUDClient implements ClientModInitializer {
                 boolean hiddenHUD = client.options.hudHidden;
 
                 if (!isCreative && !hiddenHUD) {
-                    PlayerInventory inv = player.getInventory();
-                    ItemStack is = inv.getArmorStack(2);
+                    ItemStack chestStack = player.getEquippedStack(EquipmentSlot.CHEST);
 
-                    boolean hasElytra = is.getItem() instanceof net.minecraft.item.ElytraItem;
-
-                    if (!hasElytra && IS_TRINKETS_API_PRESENT) {
-                        is = getTrinketsElytraItemStack(player);
-                        hasElytra = is.getItem() instanceof net.minecraft.item.ElytraItem;
-                    }
+                    boolean hasElytra = chestStack.getItem().toString().equals("minecraft:elytra");
 
                     if (hasElytra) {
-                        int dam = is.getMaxDamage() - is.getDamage();
-                        float durability_float = (dam == 1) ? 0 : (float) dam / is.getMaxDamage();
+                        int itemMaxDamage = chestStack.getMaxDamage();
+
+                        int dmg = itemMaxDamage - chestStack.getDamage();
+                        float durability_float = (dmg == 1) ? 0 : (float) dmg / itemMaxDamage;
 
                         if (HUD_show_percent) {
                             durability = df.format(durability_float * 100) + " %";
                         } else {
-                            durability = dam + " / " + is.getMaxDamage();
+                            durability = dmg + " / " + itemMaxDamage;
                         }
 
-                        if (player.isFallFlying() && durability_float < minPerc && showWarning) {
+                        boolean isPlayerFlying = player.getPose().toString().equals("FALL_FLYING");
+
+                        if (isPlayerFlying && durability_float < minPerc && showWarning) {
                             player.sendMessage(
                                     Text.literal(messageText)
                                             .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(message_color))
@@ -156,39 +125,11 @@ public class ElytraHUDClient implements ClientModInitializer {
                 }
 
                 Identifier texture = Identifier.of("minecraft", "textures/item/elytra.png");
-                context.drawTexture(texture, renderX + 5, renderY - 16, 0, 0, 16, 16, 16, 16);
+                context.drawTexture(RenderLayer::getGuiTextured, texture, renderX + 5, renderY - 16, 0, 0, 16, 16, 16, 16);
 
                 context.drawText(renderer, durability, renderX + 5 + 18, renderY - 16 + 4, 16777215, true);
 
             }
         });
-    }
-
-    @SuppressWarnings("unchecked")
-    public ItemStack getTrinketsElytraItemStack(LivingEntity livingEntity) {
-        try {
-            Optional<?> trinketComponentOpt = (Optional<?>) getTrinketComponentMethod.invoke(null, livingEntity);
-
-            if (trinketComponentOpt.isPresent()) {
-                Object trinketComponent = trinketComponentOpt.get();
-                List<?> equippedList = (List<?>) getEquippedMethod.invoke(trinketComponent, ELYTRA_CHECK);
-
-                if (!equippedList.isEmpty()) {
-                    for (Object item : equippedList) {
-                        Pair<Object, ItemStack> pair = (Pair<Object, ItemStack>) item;
-                        ItemStack item_stack = pair.getRight();
-
-                        boolean isElytra = item_stack.getItem() instanceof net.minecraft.item.ElytraItem;
-                        if (isElytra)
-                            return item_stack;
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return ItemStack.EMPTY;
     }
 }

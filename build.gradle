@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'fabric-loom' version '1.10-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -10,8 +10,6 @@ base {
     archivesName = project.archives_base_name
 }
 
-
-// Add the Terraformers maven repo to your repositories block
 repositories {
     maven {
         name = "Terraformers"
@@ -24,7 +22,6 @@ repositories {
         url = 'https://maven.ladysnake.org/releases'
     }
 }
-
 
 loom {
     splitEnvironmentSourceSets()
@@ -48,9 +45,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 
-    modImplementation "dev.emi:trinkets:${trinkets_version}"
-
-    modApi("me.shedaniel.cloth:cloth-config-fabric:15.0.127") {
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${project.clothconfig_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
